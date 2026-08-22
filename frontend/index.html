@@ -1,0 +1,425 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>OpsPilot</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            🚀 OpsPilot
+        </div>
+
+        <nav>
+
+            <button class="nav-btn active" onclick="showSection('dashboard')">
+                ðŸ  Dashboard
+            </button>
+
+            <button class="nav-btn" onclick="showSection('servers')">
+                🖥️ Servers
+            </button>
+
+            <button class="nav-btn" onclick="showSection('deployments')">
+                🚀 Deployments
+            </button>
+
+            <button class="nav-btn" onclick="showSection('incidents')">
+                🚨 Incidents
+            </button>
+
+            <button class="nav-btn" onclick="showSection('activity')">
+                📋 Activity
+            </button>
+
+        </nav>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div>
+                <h1 id="page-title">Dashboard</h1>
+                <p>DevOps monitoring & deployment platform</p>
+            </div>
+
+            <div class="connection">
+                <span class="status-dot"></span>
+                Backend Connected
+            </div>
+
+        </header>
+
+
+        <!-- DASHBOARD -->
+
+        <section id="dashboard" class="section active">
+
+            <div class="cards">
+
+                <div class="card">
+                    <div class="card-title">Total Servers</div>
+                    <div class="card-value" id="totalServers">0</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Healthy Servers</div>
+                    <div class="card-value green" id="healthyServers">0</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Deployments</div>
+                    <div class="card-value" id="totalDeployments">0</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Failed</div>
+                    <div class="card-value red" id="failedDeployments">0</div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">Open Incidents</div>
+                    <div class="card-value red" id="openIncidents">0</div>
+                </div>
+
+            </div>
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <h2>Server Health</h2>
+
+                    <button onclick="loadServers()" class="refresh-btn">
+                        ↻ Refresh
+                    </button>
+                </div>
+
+                <div id="serverHealth">
+                    Loading...
+                </div>
+
+            </div>
+                          <!-- DOCKER MONITORING -->
+
+              <div class="panel">
+
+                  <div class="panel-header">
+
+                      <div>
+                          <h2>Docker Monitoring</h2>
+
+                          <p class="deployment-info">
+                              Docker containers and images
+                          </p>
+                      </div>
+
+                      <button
+                          onclick="loadDocker()"
+                          class="refresh-btn"
+                      >
+                          ↻ Refresh
+                      </button>
+
+                  </div>
+
+                  <div id="dockerInfo">
+                      Loading...
+                  </div>
+
+              </div>
+                
+        
+
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <h2>Recent Deployments</h2>
+                </div>
+
+                <div id="recentDeployments">
+                    Loading...
+                </div>
+
+            </div>
+
+        </section>
+
+
+      <!-- SERVERS -->
+
+<section id="servers" class="section">
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <h2>Server Management</h2>
+
+            <button onclick="loadServers()" class="refresh-btn">
+                ↻ Refresh
+            </button>
+        </div>
+
+        <!-- ADD SERVER FORM -->
+
+        <div class="add-server-form">
+
+            <input
+                type="text"
+                id="serverName"
+                placeholder="Server name"
+            >
+
+            <input
+                type="text"
+                id="serverIP"
+                placeholder="IP address"
+            >
+
+            <button
+                onclick="addServer()"
+                class="add-btn"
+            >
+                + Add Server
+            </button>
+
+        </div>
+
+        <!-- SERVER LIST -->
+
+        <div id="serversList">
+            Loading...
+        </div>
+
+    </div>
+
+</section>
+
+
+        <!-- DEPLOYMENTS -->
+
+<section id="deployments" class="section">
+
+    <div class="panel">
+
+        <div class="panel-header">
+            <div>
+                <h2>Deployment Management</h2>
+                <p class="deployment-info">
+                    Create and manage application deployments
+                </p>
+            </div>
+
+            <button onclick="loadDeployments()" class="refresh-btn">
+                ↻ Refresh
+            </button>
+        </div>
+
+
+        <!-- CREATE DEPLOYMENT -->
+
+        <div class="add-server-form">
+
+            <input
+                type="text"
+                id="deploymentApp"
+                placeholder="Application name"
+            >
+
+            <input
+                type="text"
+                id="deploymentRepo"
+                placeholder="Git repository URL"
+            >
+
+            <input
+                type="text"
+                id="deploymentBranch"
+                placeholder="Branch"
+                value="main"
+            >
+
+            <input
+                type="text"
+                id="deploymentImage"
+                placeholder="Docker image"
+            >
+
+            <input
+                type="text"
+                id="deploymentContainer"
+                placeholder="Container name"
+            >
+
+            <input
+                type="number"
+                id="deploymentPort"
+                placeholder="Port"
+                value="8000"
+            >
+
+            <button
+                onclick="createDeployment()"
+                class="add-btn"
+            >
+                + Create Deployment
+            </button>
+
+        </div>
+
+
+        <!-- DEPLOYMENT HISTORY -->
+
+        <div id="deploymentsList">
+            Loading...
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- INCIDENTS -->
+
+<!-- INCIDENTS -->
+
+<section id="incidents" class="section">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>Incident Management</h2>
+
+                <p class="deployment-info">
+                    Monitor and manage infrastructure incidents
+                </p>
+            </div>
+
+            <button
+                class="refresh-btn"
+                onclick="loadIncidents()"
+            >
+                ↻ Refresh
+            </button>
+
+        </div>
+
+
+        <!-- CREATE INCIDENT -->
+
+        <div class="add-server-form">
+
+            <input
+                type="text"
+                id="incidentTitle"
+                placeholder="Incident title"
+            >
+
+            <select id="incidentSeverity">
+
+                <option value="low">
+                    Low
+                </option>
+
+                <option value="medium" selected>
+                    Medium
+                </option>
+
+                <option value="high">
+                    High
+                </option>
+
+                <option value="critical">
+                    Critical
+                </option>
+
+            </select>
+
+            <input
+                type="text"
+                id="incidentDescription"
+                placeholder="Incident description"
+            >
+
+            <button
+                onclick="createIncident()"
+                class="add-btn"
+            >
+                + Create Incident
+            </button>
+
+        </div>
+
+
+        <!-- INCIDENT LIST -->
+
+        <div id="incidentsList">
+
+            <div class="empty">
+                Loading incidents...
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+     <!-- ACTIVITY -->
+
+<section id="activity" class="section">
+
+    <div class="panel">
+
+        <div class="panel-header">
+
+            <div>
+                <h2>Activity Log</h2>
+
+                <p class="deployment-info">
+                    Recent actions and system activity
+                </p>
+            </div>
+
+            <button onclick="loadActivities()" class="refresh-btn">
+                ↻ Refresh
+            </button>
+
+        </div>
+
+        <div id="activitiesList">
+            Loading activities...
+        </div>
+
+    </div>
+
+</section>
+<script src="script.js"></script>
+
+
+
+
+
+
