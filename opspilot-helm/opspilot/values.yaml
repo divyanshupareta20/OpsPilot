@@ -1,0 +1,13 @@
+namespace: opspilot
+
+app:
+  name: opspilot
+  image: opspilot
+  tag: latest
+  replicas: 1
+  port: 8000
+
+service:
+  name: opspilot-service
+  port: 8000
+  nodePort: 32545
