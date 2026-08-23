@@ -1,3 +1,4 @@
+```groovy
 pipeline {
 
     agent any
@@ -16,37 +17,39 @@ pipeline {
             }
         }
 
-        stage('Docker Deploy') {
+        stage('Load Image into Kind') {
             steps {
-                withCredentials([string(credentialsId: 'mysql-password', variable: 'MYSQL_PASSWORD')]) {
-                    sh '''
-                        docker rm -f opspilot || true
+                sh '''
+                    kind load docker-image opspilot:latest --name opspilot-cluster
+                '''
+            }
+        }
 
-                        docker network inspect opspilot-network >/dev/null 2>&1 || \
-                        docker network create opspilot-network
+        stage('Kubernetes Deploy') {
+            steps {
+                sh '''
+                    kubectl apply -f opspilot-deployment.yaml
+                    kubectl apply -f opspilot-service.yaml
 
-                        docker network connect opspilot-network mysql 2>/dev/null || true
+                    kubectl rollout restart deployment/opspilot -n opspilot
 
-                        docker run -d \
-                            --name opspilot \
-                            --network opspilot-network \
-                            -p 8000:8000 \
-                            -e DB_HOST=mysql \
-                            -e DB_PORT=3306 \
-                            -e DB_USER=root \
-                            -e DB_PASSWORD="$MYSQL_PASSWORD" \
-                            -e DB_NAME=opspilot \
-                            opspilot:latest
-                    '''
-                }
+                    kubectl rollout status deployment/opspilot -n opspilot --timeout=120s
+                '''
             }
         }
 
         stage('Health Check') {
             steps {
                 sh '''
-                    sleep 10
-                    curl -f http://localhost:8000/health
+                    sleep 5
+                    kubectl run curl-test \
+                        -n opspilot \
+                        --rm \
+                        -i \
+                        --restart=Never \
+                        --image=curlimages/curl \
+                        -- \
+                        curl -f http://opspilot-service:8000/health
                 '''
             }
         }
@@ -63,3 +66,4 @@ pipeline {
         }
     }
 }
+```
