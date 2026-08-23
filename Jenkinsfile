@@ -18,25 +18,27 @@ pipeline {
 
         stage('Docker Deploy') {
             steps {
-                sh '''
-                    docker rm -f opspilot || true
+                withCredentials([string(credentialsId: 'mysql-password', variable: 'MYSQL_PASSWORD')]) {
+                    sh '''
+                        docker rm -f opspilot || true
 
-                    docker network inspect opspilot-network >/dev/null 2>&1 || \
-                    docker network create opspilot-network
+                        docker network inspect opspilot-network >/dev/null 2>&1 || \
+                        docker network create opspilot-network
 
-                    docker network connect opspilot-network mysql 2>/dev/null || true
+                        docker network connect opspilot-network mysql 2>/dev/null || true
 
-                    docker run -d \
-                        --name opspilot \
-                        --network opspilot-network \
-                        -p 8000:8000 \
-                        -e DB_HOST=mysql \
-                        -e DB_PORT=3306 \
-                        -e DB_USER=root \
-                        -e DB_PASSWORD=opspilot123 \
-                        -e DB_NAME=opspilot \
-                        opspilot:latest
-                '''
+                        docker run -d \
+                            --name opspilot \
+                            --network opspilot-network \
+                            -p 8000:8000 \
+                            -e DB_HOST=mysql \
+                            -e DB_PORT=3306 \
+                            -e DB_USER=root \
+                            -e DB_PASSWORD="$MYSQL_PASSWORD" \
+                            -e DB_NAME=opspilot \
+                            opspilot:latest
+                    '''
+                }
             }
         }
 
