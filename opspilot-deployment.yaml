@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opspilot
+  namespace: opspilot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opspilot
+  template:
+    metadata:
+      labels:
+        app: opspilot
+    spec:
+      containers:
+        - name: opspilot
+          image: opspilot:latest
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_HOST
+              value: mysql
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              value: opspilot123
+            - name: DB_NAME
+              value: opspilot
