@@ -1,4 +1,4 @@
-
+```groovy
 pipeline {
 
     agent any
@@ -25,15 +25,16 @@ pipeline {
             }
         }
 
-        stage('Kubernetes Deploy') {
+        stage('Helm Deploy') {
             steps {
                 sh '''
-                    kubectl apply -f opspilot-deployment.yaml
-                    kubectl apply -f opspilot-service.yaml
+                    helm upgrade --install opspilot ./opspilot-helm/opspilot \
+                        -n opspilot \
+                        --create-namespace
 
-                    kubectl rollout restart deployment/opspilot -n opspilot
-
-                    kubectl rollout status deployment/opspilot -n opspilot --timeout=120s
+                    kubectl rollout status deployment/opspilot \
+                        -n opspilot \
+                        --timeout=120s
                 '''
             }
         }
@@ -67,4 +68,5 @@ pipeline {
         }
     }
 }
+```
 
