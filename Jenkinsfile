@@ -1,4 +1,4 @@
-```groovy
+
 pipeline {
 
     agent any
@@ -42,6 +42,7 @@ pipeline {
             steps {
                 sh '''
                     sleep 5
+
                     kubectl run curl-test \
                         -n opspilot \
                         --rm \
